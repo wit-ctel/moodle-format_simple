@@ -151,7 +151,7 @@ class format_simple_renderer extends format_section_renderer_base {
                 $previouslink .= html_writer::end_tag('div');
                 $previouslink .= html_writer::start_tag('span', array('class' => 'text'));
                 $previouslink .= html_writer::start_tag('span', array('class' => 'nav_guide'));
-                $previouslink .= get_string('previoussection', 'theme_edgy');
+                $previouslink .= get_string('previoussection', 'format_simple');
                 $previouslink .= html_writer::end_tag('span');
                 $previouslink .= html_writer::empty_tag('br');
                 $previouslink .= $courseformat->get_section_name($sections[$back]);
@@ -173,7 +173,7 @@ class format_simple_renderer extends format_section_renderer_base {
                 $nextlink .= html_writer::end_tag('div');
                 $nextlink .= html_writer::start_tag('span', array('class' => 'text'));
                 $nextlink .= html_writer::start_tag('span', array('class' => 'nav_guide'));
-                $nextlink .= get_string('nextsection', 'theme_edgy');
+                $nextlink .= get_string('nextsection', 'format_simple');
                 $nextlink .= html_writer::end_tag('span');
                 $nextlink .= html_writer::empty_tag('br');
                 $nextlink .= $courseformat->get_section_name($sections[$forward]);
