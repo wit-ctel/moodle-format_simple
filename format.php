@@ -54,7 +54,13 @@ if (empty($displaysection)) {
   $displaysection = 0; // we always default to section 0
 }
 
-$renderer->print_single_section_page($course, null, null, null, null, $displaysection);
+if ($PAGE->user_is_editing()) {
+  $renderer->print_multiple_section_page($course, null, null, null, null);
+} else {
+  $renderer->print_single_section_page($course, null, null, null, null, $displaysection);  
+}
+
+
 
 
 // Include course format js module

@@ -121,7 +121,9 @@ class format_simple_renderer extends format_section_renderer_base {
         // Close single-section div.
         echo html_writer::end_tag('section');
     }
-
+    
+    
+    
     /**
      * Generate next/previous section links for naviation
      *
@@ -186,6 +188,7 @@ class format_simple_renderer extends format_section_renderer_base {
         return $links;
     }
     
+    
     /**
      * Generate the display of the header part of a section before
      * course modules are included
@@ -216,10 +219,28 @@ class format_simple_renderer extends format_section_renderer_base {
             'class' => 'section main clearfix'.$sectionstyle, 'role'=>'region',
             'aria-label'=> get_section_name($course, $section)));
 
+        $leftcontent = $this->section_left_content($section, $course, $onsectionpage);
+        $o.= html_writer::tag('div', $leftcontent, array('class' => 'left side'));
+
         $rightcontent = $this->section_right_content($section, $course, $onsectionpage);
         $o.= html_writer::tag('div', $rightcontent, array('class' => 'right side'));
-        $o.= html_writer::start_tag('div', array('class' => 'content'));
+        
 
+        // When not on a section page, we display the section titles except the general section if null
+        $hasnamenotsecpg = (!$onsectionpage && ($section->section != 0 || !is_null($section->name)));
+
+        // When on a section page, we only display the general section title, if title is not the default one
+        $hasnamesecpg = ($onsectionpage && ($section->section == 0 && !is_null($section->name)));
+
+        $classes = ' accesshide';
+        if ($hasnamenotsecpg || $hasnamesecpg) {
+            $classes = '';
+        }
+        
+        $o.= $this->output->heading($this->section_title($section, $course), 3, 'sectionname' . $classes);
+        
+        
+        $o.= html_writer::start_tag('div', array('id' => 'section-'.$section->section.'-content', 'class' => 'content collapse in'));  
         $o.= html_writer::start_tag('div', array('class' => 'summary'));
         $o.= $this->format_summary_text($section);
 
@@ -237,6 +258,15 @@ class format_simple_renderer extends format_section_renderer_base {
                 has_capability('moodle/course:viewhiddensections', $context));
 
         return $o;
+    }
+    
+    
+    public function section_title($section, $course) {
+        $title = get_section_name($course, $section);
+        $url = '#section-'.$section->section.'-content';
+        $title = html_writer::link($url, $title, array('data-toggle' => 'collapse'));
+                                                   
+        return $title;
     }
     
     /**
