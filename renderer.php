@@ -225,7 +225,6 @@ class format_simple_renderer extends format_section_renderer_base {
         $rightcontent = $this->section_right_content($section, $course, $onsectionpage);
         $o.= html_writer::tag('div', $rightcontent, array('class' => 'right side'));
         
-
         // When not on a section page, we display the section titles except the general section if null
         $hasnamenotsecpg = (!$onsectionpage && ($section->section != 0 || !is_null($section->name)));
 
@@ -238,9 +237,16 @@ class format_simple_renderer extends format_section_renderer_base {
         }
         
         $o.= $this->output->heading($this->section_title($section, $course), 3, 'sectionname' . $classes);
+      
+        if ($PAGE->user_is_editing()) {
+          // 
+          $showsection = ($section->section != 0 ? true : false);   
+          
+          $o.= print_collapsible_region_start('content', 'section-'.$section->section.'-content', get_string('showfromothers', 'format_simple'), false, $showsection, true);
+        } else {
+          $o.= html_writer::start_tag('div', array('class' => 'content'));
+        }
         
-        
-        $o.= html_writer::start_tag('div', array('id' => 'section-'.$section->section.'-content', 'class' => 'content collapse in'));  
         $o.= html_writer::start_tag('div', array('class' => 'summary'));
         $o.= $this->format_summary_text($section);
 
@@ -260,13 +266,22 @@ class format_simple_renderer extends format_section_renderer_base {
         return $o;
     }
     
-    
-    public function section_title($section, $course) {
-        $title = get_section_name($course, $section);
-        $url = '#section-'.$section->section.'-content';
-        $title = html_writer::link($url, $title, array('data-toggle' => 'collapse'));
-                                                   
-        return $title;
+    /**
+     * Generate the display of the footer part of a section
+     *
+     * @return string HTML to output.
+     */
+    protected function section_footer() {
+        global $PAGE;
+        
+        if ($PAGE->user_is_editing()) {
+          $o = print_collapsible_region_end(true);
+        } else {
+          $o = html_writer::end_tag('div');
+        }
+        $o.= html_writer::end_tag('li');
+
+        return $o;
     }
     
     /**
