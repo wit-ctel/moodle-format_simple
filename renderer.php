@@ -225,19 +225,11 @@ class format_simple_renderer extends format_section_renderer_base {
         $rightcontent = $this->section_right_content($section, $course, $onsectionpage);
         $o.= html_writer::tag('div', $rightcontent, array('class' => 'right side'));
         
-        // When not on a section page, we display the section titles except the general section if null
-        $hasnamenotsecpg = (!$onsectionpage && ($section->section != 0 || !is_null($section->name)));
-
-        // When on a section page, we only display the general section title, if title is not the default one
-        $hasnamesecpg = ($onsectionpage && ($section->section == 0 && !is_null($section->name)));
-
-        $classes = ' accesshide';
-        if ($hasnamenotsecpg || $hasnamesecpg) {
-            $classes = '';
+        // only output a header when listing multiple sections
+        if ($onsectionpage == false) {
+          $o.= $this->output->heading($this->section_title($section, $course), 3, 'sectionname');
         }
         
-        $o.= $this->output->heading($this->section_title($section, $course), 3, 'sectionname' . $classes);
-      
         if ($PAGE->user_is_editing()) {
           // 
           $showsection = ($section->section != 0 ? true : false);   
@@ -307,7 +299,7 @@ class format_simple_renderer extends format_section_renderer_base {
     protected function page_title() {
         return get_string('topicoutline');
     }
-
+    
     /**
      * Generate the edit controls of a section
      *
