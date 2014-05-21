@@ -33,3 +33,4 @@ $string['hidefromothers'] = 'Hide topic';
 $string['showfromothers'] = 'Show topic';
 $string['previoussection'] = 'Previous Section';
 $string['nextsection'] = 'Next Section';
+$string['currenttopic'] = 'Current Topic';

@@ -90,6 +90,11 @@ class format_simple_renderer extends format_section_renderer_base {
             $titleattr .= ' dimmed_text';
         }
         $sectiontitle .= $this->output->heading(get_section_name($course, $displaysection), 3, $classes);
+        
+        if (course_get_format($course)->is_section_current($thissection)) {
+            $sectiontitle .= html_writer::tag('span', get_string('currenttopic', 'format_simple'), array('class' => 'label label-info'));    
+        }
+        
         $sectiontitle .= html_writer::tag('div', $this->section_nav_selection($course, $sections, $displaysection),
               array('class' => 'pull-right'));
       
@@ -210,8 +215,6 @@ class format_simple_renderer extends format_section_renderer_base {
             // Only in the non-general sections.
             if (!$section->visible) {
                 $sectionstyle = ' hidden';
-            } else if (course_get_format($course)->is_section_current($section)) {
-                $sectionstyle = ' current';
             }
         }
 
