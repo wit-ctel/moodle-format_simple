@@ -238,10 +238,8 @@ class format_simple_renderer extends format_section_renderer_base {
         }
         
         if ($PAGE->user_is_editing()) {
-            // 
-            $showsection = ($section->section != 0 ? true : false);   
-          
-            $o.= print_collapsible_region_start('content', 'section-'.$section->section.'-content', get_string('showfromothers', 'format_simple'), false, $showsection, true);
+          $o.= print_collapsible_region_start('content', 'section-'.$section->section.'-content', 
+                                                  get_string('showfromothers', 'format_simple'), false, true, true);
         } else {
             $o.= html_writer::start_tag('div', array('class' => 'content'));
         }
