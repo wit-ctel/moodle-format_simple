@@ -237,13 +237,6 @@ class format_simple_renderer extends format_section_renderer_base {
             }  
         }
         
-        if ($PAGE->user_is_editing()) {
-          $o.= print_collapsible_region_start('content', 'section-'.$section->section.'-content', 
-                                                  get_string('showfromothers', 'format_simple'), false, true, true);
-        } else {
-            $o.= html_writer::start_tag('div', array('class' => 'content'));
-        }
-        
         $o.= html_writer::start_tag('div', array('class' => 'summary'));
         $o.= $this->format_summary_text($section);
 
@@ -259,7 +252,13 @@ class format_simple_renderer extends format_section_renderer_base {
 
         $o .= $this->section_availability_message($section,
                 has_capability('moodle/course:viewhiddensections', $context));
-
+        
+        if ($PAGE->user_is_editing()) {
+          $o.= html_writer::start_tag('div', array('id' => 'section-'.$section->section.'-content', 'class' => 'content content--editing collapse'));
+        } else {
+          $o.= html_writer::start_tag('div', array('class' => 'content'));
+        }
+                
         return $o;
     }
     
@@ -271,11 +270,8 @@ class format_simple_renderer extends format_section_renderer_base {
     protected function section_footer() {
         global $PAGE;
         
-        if ($PAGE->user_is_editing()) {
-          $o = print_collapsible_region_end(true);
-        } else {
-          $o = html_writer::end_tag('div');
-        }
+       
+        $o = html_writer::end_tag('div');
         $o.= html_writer::end_tag('li');
 
         return $o;
