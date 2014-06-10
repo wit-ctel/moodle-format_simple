@@ -150,9 +150,6 @@ class format_simple_renderer extends format_section_renderer_base {
         while ($back >= 0 and empty($links['previous'])) {
             if ($canviewhidden || $sections[$back]->uservisible) {
                 $params = array('class' => 'previous_section pull-left');
-                if (!$sections[$back]->visible) {
-                    $params = array('class' => 'dimmed_text');
-                }
                 $previouslink = html_writer::start_tag('div', array('class' => 'nav_icon'));
                 $previouslink .= $previousarrow;
                 $previouslink .= html_writer::end_tag('div');
@@ -172,9 +169,6 @@ class format_simple_renderer extends format_section_renderer_base {
         while ($forward <= $course->numsections and empty($links['next'])) {
             if ($canviewhidden || $sections[$forward]->uservisible) {
                 $params = array('class' => 'next_section pull-right');
-                if (!$sections[$forward]->visible) {
-                    $params = array('class' => 'dimmed_text');
-                }
                 $nextlink = html_writer::start_tag('div', array('class' => 'nav_icon'));
                 $nextlink .= $nextarrow;
                 $nextlink .= html_writer::end_tag('div');
