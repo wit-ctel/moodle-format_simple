@@ -216,12 +216,16 @@ class format_simple_renderer extends format_section_renderer_base {
         $o.= html_writer::start_tag('li', array('id' => 'section-'.$section->section,
             'class' => 'section main clearfix'.$sectionstyle, 'role'=>'region',
             'aria-label'=> get_section_name($course, $section)));
-
-        $leftcontent = $this->section_left_content($section, $course, $onsectionpage);
-        $o.= html_writer::tag('div', $leftcontent, array('class' => 'left side'));
-
-        $rightcontent = $this->section_right_content($section, $course, $onsectionpage);
-        $o.= html_writer::tag('div', $rightcontent, array('class' => 'right side'));
+        
+        if ($PAGE->user_is_editing()) {
+            // left content - move
+            $leftcontent = $this->section_left_content($section, $course, $onsectionpage);
+            $o.= html_writer::tag('div', $leftcontent, array('class' => 'left side'));
+            
+            // right content - settings, visibility etc.
+            $rightcontent = $this->section_right_content($section, $course, $onsectionpage);
+            $o.= html_writer::tag('div', $rightcontent, array('class' => 'right side'));
+        }
         
         // only output a header when listing multiple sections
         if ($onsectionpage == false) {
