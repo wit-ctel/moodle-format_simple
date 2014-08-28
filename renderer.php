@@ -40,35 +40,35 @@ require_once($CFG->dirroot.'/course/format/renderer.php');
  */
 class format_simple_courseheader implements renderable {
   
-  /** course_in_list course object **/
-  protected $course = false; 
+    /** course_in_list course object **/
+    protected $course = false; 
   
-  public function __construct($course) {
-      $this->course = $course;
-  }
+    public function __construct($course) {
+        $this->course = $course;
+    }
   
-  /**
-   * Return a url for the course title image
-   */
-  public function get_course_image_url() {
-      global $CFG;
+    /**
+     * Return a url for the course title image
+     */
+    public function get_course_image_url() {
+        global $CFG;
       
-      $files = $this->course->get_course_overviewfiles();
-      
-      if ($files) {
-          // work with the first overview file returned
-          $course_image_file = array_shift($files);
+        $files = $this->course->get_course_overviewfiles();
+        
+        if ($files) {
+            // work with the first overview file returned
+            $course_image_file = array_shift($files);
           
-          $course_image_url = file_encode_url("$CFG->wwwroot/pluginfile.php",
+            $course_image_url = file_encode_url("$CFG->wwwroot/pluginfile.php",
                   '/'. $course_image_file->get_contextid(). '/'. $course_image_file->get_component(). '/'.
-                  $course_image_file->get_filearea(). $course_image_file->get_filepath(). $course_image_file->get_filename(), false);
+                  $course_image_file->get_filearea(). $course_image_file->get_filepath(). $course_image_file->get_filename(),                       false);
               
-      } else {
-          $course_image_url = "";
-      }
+        } else {
+            $course_image_url = "";
+        }
       
-      return $course_image_url;
-  }
+        return $course_image_url;
+    }
 }
 
 class format_simple_renderer extends format_section_renderer_base {
@@ -383,15 +383,14 @@ class format_simple_renderer extends format_section_renderer_base {
     }
     
     protected function render_format_simple_courseheader(format_simple_courseheader $me) {
+        $course_image_url = $me->get_course_image_url();
+        $course_image = "";
         
-      $course_image_url = $me->get_course_image_url();
-      $course_image = "";
-      
-      if ($course_image_url != "") {
-          $course_image = html_writer::empty_tag('img', array('src' => $course_image_url, 'alt' => 'Course Image '));
-      }
+        if ($course_image_url != "") {
+            $course_image = html_writer::empty_tag('img', array('src' => $course_image_url, 'alt' => 'Course Image '));
+        }
         
-      return $course_image;
+        return $course_image;
     }
     
 }
