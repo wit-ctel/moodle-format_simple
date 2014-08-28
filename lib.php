@@ -322,6 +322,7 @@ class format_simple extends format_base {
       global $CFG;
       
       require_once($CFG->libdir. '/coursecatlib.php');
+      require_once(realpath(dirname(__FILE__))."/renderer.php");
       
       $course = new course_in_list($this->get_course());
       return new format_simple_courseheader($course);
