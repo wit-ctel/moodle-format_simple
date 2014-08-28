@@ -244,7 +244,8 @@ class format_simple_renderer extends format_section_renderer_base {
             }
         }
         
-        $o.= html_writer::start_tag('div', array('class' => 'summary'));
+        $summaryclasses = $PAGE->user_is_editing() ? 'summary summary--editing' : 'summary';
+        $o.= html_writer::start_tag('div', array('class' => $summaryclasses));
         $o.= $this->format_summary_text($section);
 
         $o.= html_writer::end_tag('div');
