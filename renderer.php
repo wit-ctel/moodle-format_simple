@@ -383,14 +383,12 @@ class format_simple_renderer extends format_section_renderer_base {
     }
     
     protected function render_format_simple_courseheader(format_simple_courseheader $me) {
-        $course_image_url = $me->get_course_image_url();
-        $course_image = "";
-        
-        if ($course_image_url != "") {
-            $course_image = html_writer::empty_tag('img', array('src' => $course_image_url, 'alt' => 'Course Image '));
+        if isset($me) {
+            $course_image_url = $me->get_course_image_url();    
+        } else {
+            $course_image_url = $this->output->pix_url('no-course-img', 'format_simple'); // then use default image
         }
         
-        return $course_image;
+        return html_writer::empty_tag('img', array('src' => $course_image_url, 'alt' => 'Course Image'));
     }
-    
 }
