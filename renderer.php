@@ -383,7 +383,7 @@ class format_simple_renderer extends format_section_renderer_base {
     }
     
     protected function render_format_simple_courseheader(format_simple_courseheader $me) {
-        if isset($me) {
+        if (isset($me)) {
             $course_image_url = $me->get_course_image_url();    
         } else {
             $course_image_url = $this->output->pix_url('no-course-img', 'format_simple'); // then use default image
