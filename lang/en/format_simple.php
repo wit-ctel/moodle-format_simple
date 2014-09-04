@@ -16,21 +16,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'format_topics', language 'en', branch 'MOODLE_20_STABLE'
+ * Strings for component 'format_simple', language 'en', branch 'MOODLE_20_STABLE'
  *
- * @package   format_topics
- * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @package   format_simple
+ * @copyright 2014 Waterford Institute of Technology
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['currentsection'] = 'This topic';
-$string['sectionname'] = 'Topic';
+$string['currentsection'] = 'This section';
+$string['sectionname'] = 'Section';
 $string['pluginname'] = 'Simple format';
 $string['section0name'] = 'Welcome';
 $string['page-course-view-topics'] = 'Any course main page in topics format';
 $string['page-course-view-topics-x'] = 'Any course page in topics format';
-$string['hidefromothers'] = 'Hide topic';
-$string['showfromothers'] = 'Show topic';
-$string['previoussection'] = 'Previous Section';
-$string['nextsection'] = 'Next Section';
-$string['currenttopic'] = 'Current Topic';
+$string['hidefromothers'] = 'Hide section';
+$string['showfromothers'] = 'Show section';
+$string['previoussection'] = 'Previous section';
+$string['nextsection'] = 'Next section';
+$string['currenttopic'] = 'Current section';
