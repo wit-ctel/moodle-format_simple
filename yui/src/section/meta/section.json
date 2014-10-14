@@ -1,0 +1,8 @@
+{
+  "moodle-format_simple-section": {
+    "requires": [
+        "base",
+        "node"
+    ]
+  }
+}
