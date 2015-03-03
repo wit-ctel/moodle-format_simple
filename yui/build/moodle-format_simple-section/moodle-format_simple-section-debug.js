@@ -1,3 +1,5 @@
+YUI.add('moodle-format_simple-section', function (Y, NAME) {
+
 /**
  * Section
  *
@@ -79,3 +81,5 @@ Y.extend(SIMPLESECTION, Y.Base, {
     ATTRS: {
     }
 });
+
+}, '@VERSION@', {"requires": ["base", "node", "anim"]});
