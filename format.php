@@ -55,6 +55,13 @@ if (empty($displaysection)) {
 }
 
 if ($PAGE->user_is_editing()) {
+  $PAGE->requires->yui_module('moodle-format_simple-section',
+          'M.format_simple.section.init_section',
+          array(array(
+              'sectionid' => $displaysection
+          ))
+  );
+  
   $renderer->print_multiple_section_page($course, null, null, null, null);
 } else {
   $renderer->print_single_section_page($course, null, null, null, null, $displaysection);  
