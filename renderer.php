@@ -291,7 +291,7 @@ class format_simple_renderer extends format_section_renderer_base {
                 has_capability('moodle/course:viewhiddensections', $context));
         
         if ($PAGE->user_is_editing()) {
-          $o.= html_writer::start_tag('div', array('id' => 'section-'.$section->section.'-content', 'class' => 'content content--editing collapse'));
+          $o.= html_writer::start_tag('div', array('id' => 'section-'.$section->section.'-content', 'class' => 'content content--editing', 'style' => 'display:none'));
         } else {
           $o.= html_writer::start_tag('div', array('class' => 'content'));
         }
