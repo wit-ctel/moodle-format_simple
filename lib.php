@@ -326,4 +326,16 @@ class format_simple extends format_base {
       $course = new course_in_list($this->get_course());
       return new format_simple_courseheader($course);
     }
+
+    /**
+     * Whether this format allows to delete sections
+     *
+     * Do not call this function directly, instead use {@link course_can_delete_section()}
+     *
+     * @param int|stdClass|section_info $section
+     * @return bool
+     */
+    public function can_delete_section($section) {
+        return true;
+    }
 }
