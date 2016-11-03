@@ -49,10 +49,29 @@ class format_simple extends format_base {
         if ((string)$section->name !== '') {
             return format_string($section->name, true,
                     array('context' => context_course::instance($this->courseid)));
-        } else if ($section->section == 0) {
+        } else {
+            return $this->get_default_section_name($section);
+        }
+    }
+    
+    /**
+     * Returns the default section name for the topics course format.
+     *
+     * If the section number is 0, it will use the string with key = section0name from the course format's lang file.
+     * If the section number is not 0, the base implementation of format_base::get_default_section_name which uses
+     * the string with the key = 'sectionname' from the course format's lang file + the section number will be used.
+     *
+     * @param stdClass $section Section object from database or just field course_sections section
+     * @return string The default value for the section name.
+     */
+    public function get_default_section_name($section) {
+        if ($section->section == 0) {
+            // Return the general section.
             return get_string('section0name', 'format_simple');
         } else {
-            return get_string('topic').' '.$section->section;
+            // Use format_base::get_default_section_name implementation which
+            // will display the section name in "Topic n" format.
+            return parent::get_default_section_name($section);
         }
     }
 
@@ -135,6 +154,19 @@ class format_simple extends format_base {
 
         // check if there are callbacks to extend course navigation
         parent::extend_course_navigation($navigation, $node);
+        
+        // We want to remove the general section if it is empty.
+        $modinfo = get_fast_modinfo($this->get_course());
+        $sections = $modinfo->get_sections();
+        if (!isset($sections[0])) {
+            // The general section is empty to find the navigation node for it we need to get its ID.
+            $section = $modinfo->get_section_info(0);
+            $generalsection = $node->get($section->id, navigation_node::TYPE_SECTION);
+            if ($generalsection) {
+                // We found the node - now remove it.
+                $generalsection->remove();
+            }
+        }
     }
 
     /**
@@ -314,7 +346,19 @@ class format_simple extends format_base {
                 }
             }
         }
-        return $this->update_format_options($data);
+        $changed = $this->update_format_options($data);
+        if ($changed && array_key_exists('numsections', $data)) {
+            // If the numsections was decreased, try to completely delete the orphaned sections (unless they are not empty).
+            $numsections = (int)$data['numsections'];
+            $maxsection = $DB->get_field_sql('SELECT max(section) from {course_sections}
+                        WHERE course = ?', array($this->courseid));
+            for ($sectionnum = $maxsection; $sectionnum > $numsections; $sectionnum--) {
+                if (!$this->delete_section($sectionnum, false)) {
+                    break;
+                }
+            }
+        }
+        return $changed;
     }
     
     public function course_header() {
@@ -337,5 +381,46 @@ class format_simple extends format_base {
      */
     public function can_delete_section($section) {
         return true;
+    }
+    
+    /**
+     * Prepares the templateable object to display section name
+     *
+     * @param \section_info|\stdClass $section
+     * @param bool $linkifneeded
+     * @param bool $editable
+     * @param null|lang_string|string $edithint
+     * @param null|lang_string|string $editlabel
+     * @return \core\output\inplace_editable
+     */
+    public function inplace_editable_render_section_name($section, $linkifneeded = true,
+                                                         $editable = null, $edithint = null, $editlabel = null) {
+        if (empty($edithint)) {
+            $edithint = new lang_string('editsectionname', 'format_topics');
+        }
+        if (empty($editlabel)) {
+            $title = get_section_name($section->course, $section);
+            $editlabel = new lang_string('newsectionname', 'format_topics', $title);
+        }
+        return parent::inplace_editable_render_section_name($section, $linkifneeded, $editable, $edithint, $editlabel);
+    }
+}
+
+/**
+ * Implements callback inplace_editable() allowing to edit values in-place
+ *
+ * @param string $itemtype
+ * @param int $itemid
+ * @param mixed $newvalue
+ * @return \core\output\inplace_editable
+ */
+function format_simple_inplace_editable($itemtype, $itemid, $newvalue) {
+    global $DB, $CFG;
+    require_once($CFG->dirroot . '/course/lib.php');
+    if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
+        $section = $DB->get_record_sql(
+            'SELECT s.* FROM {course_sections} s JOIN {course} c ON s.course = c.id WHERE s.id = ? AND c.format = ?',
+            array($itemid, 'topics'), MUST_EXIST);
+        return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
 }
