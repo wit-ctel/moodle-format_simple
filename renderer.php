@@ -164,8 +164,6 @@ class format_simple_renderer extends format_section_renderer_base {
         echo html_writer::end_tag('section');
     }
     
-    
-    
     /**
      * Generate next/previous section links for naviation
      *
@@ -242,7 +240,7 @@ class format_simple_renderer extends format_section_renderer_base {
         $currenttext = '';
         $sectionstyle = '';
         $context = context_course::instance($course->id);
-        
+
         if ($section->section != 0) {
             // Only in the non-general sections.
             if (!$section->visible) {
@@ -253,49 +251,46 @@ class format_simple_renderer extends format_section_renderer_base {
         $o.= html_writer::start_tag('li', array('id' => 'section-'.$section->section,
             'class' => 'section main clearfix'.$sectionstyle, 'role'=>'region',
             'aria-label'=> get_section_name($course, $section)));
-        
+            
+        // Create a span that contains the section title to be used to create the keyboard section move menu.
+        $o .= html_writer::tag('span', get_section_name($course, $section), array('class' => 'hidden sectionname'));    
+
         if ($PAGE->user_is_editing()) {
             // left content - move
             $leftcontent = $this->section_left_content($section, $course, $onsectionpage);
             $o.= html_writer::tag('div', $leftcontent, array('class' => 'left side'));
-            
+
             // right content - settings, visibility etc.
             $rightcontent = $this->section_right_content($section, $course, $onsectionpage);
             $o.= html_writer::tag('div', $rightcontent, array('class' => 'right side'));
         }
         
+        $classes = '';
+        
         // only output a header when listing multiple sections
         if ($onsectionpage == false) {
-            $o.= $this->output->heading($this->section_title($section, $course), 3, 'sectionname');
-            
-            if ($PAGE->user_is_editing() && has_capability('moodle/course:update', $context)) {
-                $url = new moodle_url('/course/editsection.php', array('id'=>$section->id, 'sr'=>$sectionreturn));
-                $o.= html_writer::link($url,
-                    html_writer::empty_tag('img', array('src' => $this->output->pix_url('i/settings'),
-                        'class' => 'iconsmall edit', 'alt' => get_string('edit'))),
-                    array('title' => get_string('edittitle'), 'class' => 'edit-summary'));
-            } 
-            
+            $sectionname = html_writer::tag('span', $this->section_title($section, $course));
+            $o.= $this->output->heading($sectionname, 3, 'sectionname' . $classes);
+
             if (course_get_format($course)->is_section_current($section)) {
-                $o .= html_writer::tag('span', get_string('currenttopic', 'format_simple'), array('class' => 'label label-info'));    
+                $o .= html_writer::tag('span', get_string('currenttopic', 'format_simple'), array('class' => 'label label-info'));
             }
         }
-        
-        $summaryclasses = $PAGE->user_is_editing() ? 'summary summary--editing' : 'summary';
-        $o.= html_writer::start_tag('div', array('class' => $summaryclasses));
-        $o.= $this->format_summary_text($section);
 
+        //$summaryclasses = $PAGE->user_is_editing() ? 'summary summary--editing' : 'summary';
+        $o.= html_writer::start_tag('div', array('class' => 'summary'));
+        $o.= $this->format_summary_text($section);
         $o.= html_writer::end_tag('div');
 
         $o .= $this->section_availability_message($section,
                 has_capability('moodle/course:viewhiddensections', $context));
-        
+
         if ($PAGE->user_is_editing()) {
           $o.= html_writer::start_tag('div', array('id' => 'section-'.$section->section.'-content', 'class' => 'content content--editing', 'style' => 'display:none'));
         } else {
           $o.= html_writer::start_tag('div', array('class' => 'content'));
         }
-                
+
         return $o;
     }
     
@@ -305,9 +300,6 @@ class format_simple_renderer extends format_section_renderer_base {
      * @return string HTML to output.
      */
     protected function section_footer() {
-        global $PAGE;
-        
-       
         $o = html_writer::end_tag('div');
         $o.= html_writer::end_tag('li');
 
@@ -336,6 +328,17 @@ class format_simple_renderer extends format_section_renderer_base {
      */
     protected function page_title() {
         return get_string('topicoutline');
+    }
+    
+    /**
+     * Generate the section title, wraps it in a link to the section page if page is to be displayed on a separate page
+     *
+     * @param stdClass $section The course_section entry from DB
+     * @param stdClass $course The course entry from DB
+     * @return string HTML to output.
+     */
+    public function section_title($section, $course) {
+        return $this->render(course_get_format($course)->inplace_editable_render_section_name($section));
     }
     
     /**
