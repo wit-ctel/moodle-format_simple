@@ -34,3 +34,5 @@ $string['showfromothers'] = 'Show section';
 $string['previoussection'] = 'Previous section';
 $string['nextsection'] = 'Next section';
 $string['currenttopic'] = 'Current section';
+$string['editsectionname'] = 'Edit section name';
+$string['newsectionname'] = 'New name for section {$a}';
